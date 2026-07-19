@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aroma & Arte | Experiência em Café</title>
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- NAVEGAÇÃO -->
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">AROMA<span>&</span>ARTE</a>
+            
+            <ul class="nav-links">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#about">Sobre</a></li>
+                <li><a href="#menu">Cardápio</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <div class="cart-btn" id="cart-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-count">0</span>
+                </div>
+                <div class="mobile-menu-btn" id="mobile-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- CARRINHO (SIDEBAR) -->
+    <aside id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Seu Pedido</h3>
+            <button id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cart-items" class="cart-items-list">
+            <!-- Itens via JS -->
+            <p class="empty-cart">Seu carrinho está vazio.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="total-container">
+                <span>Total</span>
+                <span id="cart-total">R$ 0,00</span>
+            </div>
+            <button class="checkout-btn" id="checkout-btn">Finalizar Compra</button>
+        </div>
+    </aside>
+    <div id="overlay"></div>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="hero-text">
+            <span class="subtitle">Bem-vindo à Aroma & Arte</span>
+            <h1>O café perfeito para momentos únicos.</h1>
+            <p>Descubra sabores artesanais em um ambiente feito para você relaxar e apreciar o melhor grão da região.</p>
+            <div class="hero-btns">
+                <a href="#menu" class="btn-primary">Explorar Cardápio</a>
+                <a href="#about" class="btn-secondary">Nossa História</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE BREVE -->
+    <section id="about" class="about-brief">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-img">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80" alt="Cafeteria">
+                </div>
+                <div class="about-content">
+                    <h2>Paixão pelo Grão</h2>
+                    <p>Selecionamos cada grão com produtores locais para garantir que a sua xícara entregue não apenas cafeína, mas uma experiência sensorial completa.</p>
+                    <ul class="features">
+                        <li><i class="fa-solid fa-check"></i> Grãos 100% Arábica</li>
+                        <li><i class="fa-solid fa-check"></i> Torra Artesanal</li>
+                        <li><i class="fa-solid fa-check"></i> Ambiente com Wi-Fi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARDÁPIO -->
+    <section id="menu" class="menu-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nosso Cardápio</h2>
+                <p>Escolha entre nossas especialidades artesanais</p>
+                <div class="filter-tabs">
+                    <button class="tab-btn active" data-filter="bebidas">Bebidas</button>
+                    <button class="tab-btn" data-filter="comidas">Comidas</button>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                <!-- BEBIDAS -->
+                <div class="menu-card" data-category="bebidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=500&q=60" alt="Espresso">
+                    </div>
+                    <div class="card-body">
+                        <h3>Espresso Clássico</h3>
+                        <p>Intenso, encorpado e aromático.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 8,50</span>
+                            <button class="add-cart" data-name="Espresso Clássico" data-price="8.50">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card" data-category="bebidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=500&q=60" alt="Cappuccino">
+                    </div>
+                    <div class="card-body">
+                        <h3>Cappuccino Real</h3>
+                        <p>Leite cremoso com toque de cacau.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 14,00</span>
+                            <button class="add-cart" data-name="Cappuccino Real" data-price="14.00">+</button>
+                        </div>
+                    </div>
+                </div>
+            <div class="menu-card" data-category="bebidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=500&q=60" alt="Iced Latte">
+                    </div>
+                    <div class="card-body">
+                        <h3>Caramel Macchiato</h3>
+                        <p>Café gelado com caramelo e baunilha.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 16,50</span>
+                            <button class="add-cart" data-name="Caramel Macchiato" data-price="16.50">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card" data-category="bebidas">
+                    <div class="card-img">
+                        <img src="1.jpg">
+                    </div>
+                    <div class="card-body">
+                        <h3>Chocolate Belga</h3>
+                        <p>Quente, cremoso e com raspas de chocolate.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 15,00</span>
+                            <button class="add-cart" data-name="Chocolate Belga" data-price="15.00">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card" data-category="bebidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=500&q=60" alt="Suco">
+                    </div>
+                    <div class="card-body">
+                        <h3>Suco de Laranja</h3>
+                        <p>100% natural, espremido na hora.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 11,00</span>
+                            <button class="add-cart" data-name="Suco de Laranja" data-price="11.00">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMIDAS -->
+                <div class="menu-card hidden" data-category="comidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=500&q=60" alt="Croissant">
+                    </div>
+                    <div class="card-body">
+                        <h3>Croissant Francês</h3>
+                        <p>Manteiga pura e massa folhada.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 12,00</span>
+                            <button class="add-cart" data-name="Croissant Francês" data-price="12.00">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card hidden" data-category="comidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=500&q=60" alt="Bolo">
+                    </div>
+                    <div class="card-body">
+                        <h3>Red Velvet</h3>
+                        <p>Fatia fofinha com cream cheese.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 18,00</span>
+                            <button class="add-cart" data-name="Red Velvet" data-price="18.00">+</button>
+                        </div>
+                    </div>
+                </div><div class="menu-card hidden" data-category="comidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=500&q=60" alt="Pão de Queijo">
+                    </div>
+                    <div class="card-body">
+                        <h3>Pão de Queijo Mineiro</h3>
+                        <p>Porção com 5 unidades quentinhas.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 9,00</span>
+                            <button class="add-cart" data-name="Pão de Queijo" data-price="9.00">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card hidden" data-category="comidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=500&q=60" alt="Quiche">
+                    </div>
+                    <div class="card-body">
+                        <h3>Quiche de Alho Poró</h3>
+                        <p>Massa leve e recheio cremoso.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 14,50</span>
+                            <button class="add-cart" data-name="Quiche Alho Poró" data-price="14.50">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card hidden" data-category="comidas">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=500&q=60" alt="Cheesecake">
+                    </div>
+                    <div class="card-body">
+                        <h3>Cheesecake Berry</h3>
+                        <p>Com calda artesanal de frutas vermelhas.</p>
+                        <div class="card-footer">
+                            <span class="price">R$ 19,50</span>
+                            <button class="add-cart" data-name="Cheesecake Berry" data-price="19.50">+</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <a href="#" class="logo">AROMA<span>&</span>ARTE</a>
+                    <p>O seu refúgio diário para um café de qualidade.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Contato</h4>
+                    <p><i class="fa-solid fa-phone"></i> (11) 99999-8888</p>
+                    <p><i class="fa-solid fa-location-dot"></i> Av. Paulista, 1000 - SP</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Siga-nos</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Aroma & Arte. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="a.js"></script>
+</body>
+</html>

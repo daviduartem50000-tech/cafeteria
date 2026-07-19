@@ -1,12 +1,14 @@
-// CONFIGURAÇÃO DO BANCO DE DADOS (mesma chave usada pelo site)
-const STORAGE_KEY = 'aroma-arte-menu-items';
+// Painel administrativo — fala direto com a API do backend (server.js)
+// Endpoints usados: GET/POST /api/bebidas, GET/POST /api/comidas, DELETE /api/:tipo/:id
 
 // ELEMENTOS
 const itemForm = document.getElementById('item-form');
 const nameInput = document.getElementById('item-name');
 const descInput = document.getElementById('item-desc');
 const priceInput = document.getElementById('item-price');
+const typeInput = document.getElementById('item-type');
 const categoryInput = document.getElementById('item-category');
+const sizeInput = document.getElementById('item-size');
 const imageInput = document.getElementById('item-image');
 const feedbackEl = document.getElementById('form-feedback');
 
@@ -24,45 +26,49 @@ let currentFilter = 'todos';
 
 const formatPrice = (value) => `R$ ${parseFloat(value).toFixed(2).replace('.', ',')}`;
 
-// GERAR ID ÚNICO PARA CADA ITEM
-function generateId() {
-    return 'item-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
-}
-
-// CARREGAR ITENS DO BANCO DE DADOS
+// CARREGAR ITENS DA API (bebidas + comidas)
 async function loadItems() {
     try {
-        const result = await window.storage.get(STORAGE_KEY, true);
-        menuItems = result && result.value ? JSON.parse(result.value) : [];
+        const [bebidasRes, comidasRes] = await Promise.all([
+            fetch('/api/bebidas'),
+            fetch('/api/comidas')
+        ]);
+
+        if (!bebidasRes.ok || !comidasRes.ok) {
+            throw new Error('Falha ao buscar itens da API');
+        }
+
+        const bebidas = await bebidasRes.json();
+        const comidas = await comidasRes.json();
+
+        // Marca cada item com o "tipo" (tabela de origem), usado pra montar
+        // a URL de exclusão e pros filtros/estatísticas da tela.
+        menuItems = [
+            ...bebidas.map(item => ({ ...item, tipo: 'bebidas' })),
+            ...comidas.map(item => ({ ...item, tipo: 'comidas' }))
+        ];
     } catch (e) {
+        console.error('Erro ao carregar itens:', e);
         menuItems = [];
+        feedbackEl.textContent = 'Não foi possível carregar os itens do servidor.';
+        feedbackEl.className = 'form-feedback error';
     }
     renderItems();
     renderStats();
 }
 
-// SALVAR NO BANCO DE DADOS
-async function saveItems() {
-    try {
-        await window.storage.set(STORAGE_KEY, JSON.stringify(menuItems), true);
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
 // RENDERIZAR ESTATÍSTICAS
 function renderStats() {
     statTotal.innerText = menuItems.length;
-    statBebidas.innerText = menuItems.filter(i => i.category === 'bebidas').length;
-    statComidas.innerText = menuItems.filter(i => i.category === 'comidas').length;
+    statBebidas.innerText = menuItems.filter(i => i.tipo === 'bebidas').length;
+    statComidas.innerText = menuItems.filter(i => i.tipo === 'comidas').length;
 }
 
 // RENDERIZAR LISTA DE ITENS
 function renderItems() {
     const filtered = currentFilter === 'todos'
         ? menuItems
-        : menuItems.filter(i => i.category === currentFilter);
+        : menuItems.filter(i => i.tipo === currentFilter);
 
     itemsListEl.innerHTML = '';
 
@@ -71,19 +77,22 @@ function renderItems() {
         return;
     }
 
-    // Itens mais recentes primeiro
-    [...filtered].reverse().forEach(item => {
+    // Itens mais recentes primeiro (a API já retorna ORDER BY id DESC,
+    // mas mantemos a ordem por segurança)
+    filtered.forEach(item => {
+        const detalhes = [item.categoria, item.tamanho].filter(Boolean).join(' · ');
+
         const row = document.createElement('div');
         row.className = 'admin-item-row';
         row.innerHTML = `
-            <img class="admin-item-thumb" src="${item.image || DEFAULT_IMAGE}" alt="${item.name}" onerror="this.src='${DEFAULT_IMAGE}'">
+            <img class="admin-item-thumb" src="${item.imagem || DEFAULT_IMAGE}" alt="${item.nome}" onerror="this.src='${DEFAULT_IMAGE}'">
             <div class="admin-item-info">
-                <h4>${item.name}</h4>
-                <p>${item.description || 'Sem descrição'}</p>
+                <h4>${item.nome}</h4>
+                <p>${item.descricao || 'Sem descrição'}${detalhes ? ' · ' + detalhes : ''}</p>
             </div>
-            <span class="admin-item-category ${item.category}">${item.category === 'bebidas' ? 'Bebida' : 'Comida'}</span>
-            <span class="admin-item-price">${formatPrice(item.price)}</span>
-            <button class="admin-delete-btn" data-id="${item.id}" title="Excluir item">
+            <span class="admin-item-category ${item.tipo}">${item.tipo === 'bebidas' ? 'Bebida' : 'Comida'}</span>
+            <span class="admin-item-price">${formatPrice(item.preco)}</span>
+            <button class="admin-delete-btn" data-id="${item.id}" data-tipo="${item.tipo}" title="Excluir item">
                 <i class="fa-solid fa-trash"></i>
             </button>
         `;
@@ -105,35 +114,43 @@ filterBtns.forEach(btn => {
 itemForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const name = nameInput.value.trim();
-    const price = parseFloat(priceInput.value);
+    const nome = nameInput.value.trim();
+    const preco = parseFloat(priceInput.value);
+    const tipo = typeInput.value;
 
-    if (!name || isNaN(price) || price < 0) {
+    if (!nome || isNaN(preco) || preco < 0) {
         feedbackEl.textContent = 'Preencha o nome e um preço válido.';
         feedbackEl.className = 'form-feedback error';
         return;
     }
 
-    const newItem = {
-        id: generateId(),
-        name,
-        description: descInput.value.trim(),
-        price,
-        category: categoryInput.value,
-        image: imageInput.value.trim() || DEFAULT_IMAGE
+    const payload = {
+        nome,
+        descricao: descInput.value.trim(),
+        preco,
+        categoria: categoryInput.value.trim(),
+        tamanho: sizeInput.value.trim(),
+        imagem: imageInput.value.trim() || DEFAULT_IMAGE
     };
 
-    menuItems.push(newItem);
-    const saved = await saveItems();
+    try {
+        const res = await fetch(`/api/${tipo}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-    if (saved) {
-        feedbackEl.textContent = `"${name}" cadastrado com sucesso!`;
+        if (!res.ok) {
+            const erro = await res.json().catch(() => ({}));
+            throw new Error(erro.erro || 'Erro ao cadastrar item');
+        }
+
+        feedbackEl.textContent = `"${nome}" cadastrado com sucesso!`;
         feedbackEl.className = 'form-feedback success';
         itemForm.reset();
-        renderItems();
-        renderStats();
-    } else {
-        menuItems.pop();
+        await loadItems();
+    } catch (err) {
+        console.error('Erro ao cadastrar item:', err);
         feedbackEl.textContent = 'Não foi possível salvar o item. Tente novamente.';
         feedbackEl.className = 'form-feedback error';
     }
@@ -147,23 +164,21 @@ itemsListEl.addEventListener('click', async (e) => {
     if (!btn) return;
 
     const id = btn.getAttribute('data-id');
-    const item = menuItems.find(i => i.id === id);
+    const tipo = btn.getAttribute('data-tipo');
+    const item = menuItems.find(i => String(i.id) === String(id) && i.tipo === tipo);
     if (!item) return;
 
-    const confirmDelete = confirm(`Tem certeza que deseja excluir "${item.name}"? Essa ação não pode ser desfeita.`);
+    const confirmDelete = confirm(`Tem certeza que deseja excluir "${item.nome}"? Essa ação não pode ser desfeita.`);
     if (!confirmDelete) return;
 
-    const backup = [...menuItems];
-    menuItems = menuItems.filter(i => i.id !== id);
-
-    const saved = await saveItems();
-    if (!saved) {
-        menuItems = backup;
+    try {
+        const res = await fetch(`/api/${tipo}/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Erro ao excluir item');
+        await loadItems();
+    } catch (err) {
+        console.error('Erro ao excluir item:', err);
         alert('Não foi possível excluir o item. Tente novamente.');
     }
-
-    renderItems();
-    renderStats();
 });
 
 // INICIALIZAÇÃO

@@ -1,9 +1,9 @@
 -- =========================================================
--- Banco de dados: cafeteria
+-- Banco de dados: railway
 -- =========================================================
 
-CREATE DATABASE IF NOT EXISTS cafeteria;
-USE cafeteria;
+CREATE DATABASE IF NOT EXISTS railway;
+USE railway;
 
 -- Tabela de bebidas
 CREATE TABLE IF NOT EXISTS bebidas (

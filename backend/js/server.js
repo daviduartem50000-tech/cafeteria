@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const pool = require('../db/db');
 
 const app = express();
@@ -9,8 +10,11 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Rota raiz - útil para verificar se a API está online (health check do Railway)
-app.get('/', (req, res) => {
+// Serve o frontend (pasta public) — index.html, style.css, a.js, imagens etc.
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// Health check da API (útil para conferir se o backend está de pé no Railway)
+app.get('/api/status', (req, res) => {
   res.json({ status: 'online', mensagem: 'API da Cafeteria Aroma & Arte está funcionando!' });
 });
 
@@ -32,25 +36,18 @@ app.get('/api/bebidas', async (req, res) => {
 // POST /api/bebidas -> cadastra uma nova bebida
 app.post('/api/bebidas', async (req, res) => {
   try {
-    const { nome, descricao, preco, categoria, tamanho } = req.body;
+    const { nome, descricao, preco, categoria, tamanho, imagem } = req.body;
 
     if (!nome || preco === undefined) {
       return res.status(400).json({ erro: 'Os campos "nome" e "preco" são obrigatórios' });
     }
 
     const [result] = await pool.query(
-      'INSERT INTO bebidas (nome, descricao, preco, categoria, tamanho) VALUES (?, ?, ?, ?, ?)',
-      [nome, descricao || null, preco, categoria || null, tamanho || null]
+      'INSERT INTO bebidas (nome, descricao, preco, categoria, tamanho, imagem) VALUES (?, ?, ?, ?, ?, ?)',
+      [nome, descricao || null, preco, categoria || null, tamanho || null, imagem || null]
     );
 
-    res.status(201).json({
-      id: result.insertId,
-      nome,
-      descricao,
-      preco,
-      categoria,
-      tamanho
-    });
+    res.status(201).json({ id: result.insertId, nome, descricao, preco, categoria, tamanho, imagem });
   } catch (err) {
     console.error('Erro ao cadastrar bebida:', err);
     res.status(500).json({ erro: 'Erro ao cadastrar bebida' });
@@ -92,25 +89,18 @@ app.get('/api/comidas', async (req, res) => {
 // POST /api/comidas -> cadastra uma nova comida
 app.post('/api/comidas', async (req, res) => {
   try {
-    const { nome, descricao, preco, categoria, tamanho } = req.body;
+    const { nome, descricao, preco, categoria, tamanho, imagem } = req.body;
 
     if (!nome || preco === undefined) {
       return res.status(400).json({ erro: 'Os campos "nome" e "preco" são obrigatórios' });
     }
 
     const [result] = await pool.query(
-      'INSERT INTO comidas (nome, descricao, preco, categoria, tamanho) VALUES (?, ?, ?, ?, ?)',
-      [nome, descricao || null, preco, categoria || null, tamanho || null]
+      'INSERT INTO comidas (nome, descricao, preco, categoria, tamanho, imagem) VALUES (?, ?, ?, ?, ?, ?)',
+      [nome, descricao || null, preco, categoria || null, tamanho || null, imagem || null]
     );
 
-    res.status(201).json({
-      id: result.insertId,
-      nome,
-      descricao,
-      preco,
-      categoria,
-      tamanho
-    });
+    res.status(201).json({ id: result.insertId, nome, descricao, preco, categoria, tamanho, imagem });
   } catch (err) {
     console.error('Erro ao cadastrar comida:', err);
     res.status(500).json({ erro: 'Erro ao cadastrar comida' });

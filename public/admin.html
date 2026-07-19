@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | Aroma & Arte</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+
+    <div class="admin-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <a href="index.html" class="logo">AROMA<span>&</span>ARTE</a>
+            <nav class="admin-nav">
+                <a href="admin.html" class="active"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a href="index.html"><i class="fa-solid fa-mug-hot"></i> Ver site</a>
+            </nav>
+            <div class="admin-sidebar-footer">Painel de gestão do cardápio</div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <h1>Painel Administrativo</h1>
+                    <p>Cadastre, visualize e remova itens do cardápio em tempo real.</p>
+                </div>
+                <a href="index.html" class="admin-back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao site</a>
+            </header>
+
+            <section class="admin-stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-total">0</span>
+                    <span class="stat-label">Itens cadastrados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-bebidas">0</span>
+                    <span class="stat-label">Bebidas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-comidas">0</span>
+                    <span class="stat-label">Comidas</span>
+                </div>
+            </section>
+
+            <section class="admin-content">
+                <!-- FORMULÁRIO DE CADASTRO -->
+                <div class="admin-card form-card">
+                    <h2>Cadastrar novo item</h2>
+                    <form id="item-form">
+                        <div class="form-group">
+                            <label for="item-name">Nome do item</label>
+                            <input type="text" id="item-name" placeholder="Ex: Latte de Baunilha" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item-desc">Descrição</label>
+                            <input type="text" id="item-desc" placeholder="Ex: Café cremoso com toque de baunilha">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="item-price">Preço (R$)</label>
+                                <input type="number" id="item-price" min="0" step="0.01" placeholder="0,00" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="item-category">Categoria</label>
+                                <select id="item-category" required>
+                                    <option value="bebidas">Bebida</option>
+                                    <option value="comidas">Comida</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item-image">URL da imagem</label>
+                            <input type="url" id="item-image" placeholder="https://exemplo.com/foto.jpg">
+                        </div>
+
+                        <button type="submit" class="btn-submit">Cadastrar item</button>
+                    </form>
+                    <p id="form-feedback" class="form-feedback"></p>
+                </div>
+
+                <!-- LISTA DE ITENS -->
+                <div class="admin-card list-card">
+                    <div class="list-card-header">
+                        <h2>Itens cadastrados</h2>
+                        <div class="list-filters">
+                            <button class="list-filter-btn active" data-filter="todos">Todos</button>
+                            <button class="list-filter-btn" data-filter="bebidas">Bebidas</button>
+                            <button class="list-filter-btn" data-filter="comidas">Comidas</button>
+                        </div>
+                    </div>
+                    <div id="items-list" class="items-list">
+                        <!-- Itens renderizados via admin.js -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

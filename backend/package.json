@@ -4,7 +4,7 @@
   "description": "API REST + Frontend do sistema da cafeteria Aroma & Arte",
   "main": "js/server.js",
   "scripts": {
-    "start": "node js/server.js",
+    "start": "node --env-file=prd.env js/server.js",
     "dev": "nodemon js/server.js"
   },
   "dependencies": {

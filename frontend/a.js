@@ -9,8 +9,10 @@ const cartCount = document.getElementById('cart-count');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const menuGrid = document.getElementById('menu-grid');
 
-// API do backend (mesma usada pelo painel admin)
-const API_BASE = 'https://radiant-acceptance-production-d0da.up.railway.app';
+// API do backend — mesma origem que serve este arquivo (o server.js serve
+// tanto o frontend quanto a API), assim funciona em qualquer domínio/serviço
+// do Railway sem precisar editar o código depois.
+const API_BASE = '';
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=500&q=60';
 
 let cart = [];

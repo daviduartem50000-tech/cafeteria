@@ -35,8 +35,8 @@ const formatPrice = (value) => `R$ ${parseFloat(value).toFixed(2).replace('.', '
 async function loadItems() {
     try {
         const [bebidasRes, comidasRes] = await Promise.all([
-            fetch(`${API_BASE}/api/bebidas`),
-            fetch(`${API_BASE}/api/comidas`)
+            fetch(`${API_BASE}radiant-acceptance-production-d0da.up.railway.app/api/bebidas`),
+            fetch(`${API_BASE}radiant-acceptance-production-d0da.up.railway.app/api/comidas`)
         ]);
 
         if (!bebidasRes.ok || !comidasRes.ok) {

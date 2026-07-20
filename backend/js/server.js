@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Serve o frontend (pasta public) — index.html, style.css, a.js, imagens etc.
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Serve o frontend (pasta "frontend", irmã de "backend") — index.html, style.css, a.js, imagens etc.
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend')));
 
 // Health check da API (útil para conferir se o backend está de pé no Railway)
 app.get('/api/status', (req, res) => {

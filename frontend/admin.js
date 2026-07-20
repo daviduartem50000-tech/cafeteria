@@ -21,6 +21,9 @@ const statComidas = document.getElementById('stat-comidas');
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=200&q=60';
 
+// API do backend (mesma usada pelo site público, a.js)
+const API_BASE = 'https://radiant-acceptance-production-d0da.up.railway.app';
+
 let menuItems = [];
 let currentFilter = 'todos';
 
@@ -30,8 +33,8 @@ const formatPrice = (value) => `R$ ${parseFloat(value).toFixed(2).replace('.', '
 async function loadItems() {
     try {
         const [bebidasRes, comidasRes] = await Promise.all([
-            fetch('/api/bebidas'),
-            fetch('/api/comidas')
+            fetch(`${API_BASE}/api/bebidas`),
+            fetch(`${API_BASE}/api/comidas`)
         ]);
 
         if (!bebidasRes.ok || !comidasRes.ok) {
@@ -134,7 +137,7 @@ itemForm.addEventListener('submit', async (e) => {
     };
 
     try {
-        const res = await fetch(`/api/${tipo}`, {
+        const res = await fetch(`${API_BASE}/api/${tipo}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -172,7 +175,7 @@ itemsListEl.addEventListener('click', async (e) => {
     if (!confirmDelete) return;
 
     try {
-        const res = await fetch(`/api/${tipo}/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_BASE}/api/${tipo}/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Erro ao excluir item');
         await loadItems();
     } catch (err) {

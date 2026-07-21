@@ -9,10 +9,13 @@ const cartCount = document.getElementById('cart-count');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const menuGrid = document.getElementById('menu-grid');
 
-// API do backend — mesma origem que serve este arquivo (o server.js serve
-// tanto o frontend quanto a API), assim funciona em qualquer domínio/serviço
-// do Railway sem precisar editar o código depois.
-const API_BASE = '';
+// API do backend — no Railway, o frontend (serviço "cafeteria") e o
+// backend (serviço "radiant-acceptance") são deployments separados, com
+// domínios diferentes. Por isso precisamos apontar explicitamente pra URL
+// completa do backend, com o protocolo — sem "https://" o navegador trata
+// como um caminho relativo do próprio frontend e a chamada nunca chega
+// no backend.
+const API_BASE = 'https://radiant-acceptance-production-d0da.up.railway.app';
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=500&q=60';
 
 let cart = [];

@@ -21,10 +21,13 @@ const statComidas = document.getElementById('stat-comidas');
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=200&q=60';
 
-// API do backend — mesma origem que serve este arquivo (o server.js serve
-// tanto o frontend quanto a API), assim funciona em qualquer domínio/serviço
-// do Railway sem precisar editar o código depois.
-const API_BASE = '';
+// API do backend — no Railway, o frontend (serviço "cafeteria") e o
+// backend (serviço "radiant-acceptance") são deployments separados, com
+// domínios diferentes. Por isso precisamos apontar explicitamente pra URL
+// completa do backend, com o protocolo — sem "https://" o navegador trata
+// como um caminho relativo do próprio frontend e a chamada nunca chega
+// no backend (é isso que estava causando os 404).
+const API_BASE = 'https://radiant-acceptance-production-d0da.up.railway.app';
 
 let menuItems = [];
 let currentFilter = 'todos';
@@ -35,8 +38,8 @@ const formatPrice = (value) => `R$ ${parseFloat(value).toFixed(2).replace('.', '
 async function loadItems() {
     try {
         const [bebidasRes, comidasRes] = await Promise.all([
-            fetch(`${API_BASE}radiant-acceptance-production-d0da.up.railway.app/api/bebidas`),
-            fetch(`${API_BASE}radiant-acceptance-production-d0da.up.railway.app/api/comidas`)
+            fetch(`${API_BASE}/api/bebidas`),
+            fetch(`${API_BASE}/api/comidas`)
         ]);
 
         if (!bebidasRes.ok || !comidasRes.ok) {
